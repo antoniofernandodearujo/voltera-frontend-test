@@ -1,27 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Voltera Test</title>
-    </head>
+<script lang="ts">
+  import { onDestroy } from 'svelte';
+  import { goto } from '$app/navigation';
+  import '../styles/styles.css'
 
-    <body>
-        <script lang="ts">
-          import '../styles/styles.css';
-          import { saudacao } from '$lib/utils';
-          
-          let nome: string = 'Antonio';
-          let message: string = saudacao(nome);
-        </script>
+  export let data: {
+    name: string;
+    ageData: { name: string; age: number; count: number } | null;
+  };
 
-        <style>
-          h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-          }
-        </style>
+  let input = data.name;
+  let timer: ReturnType<typeof setTimeout>;
 
-        <h1>{message}</h1>
-    </body>
-</html>
+  function onInput(e: Event) {
+    clearTimeout(timer);
+    const value = (e.target as HTMLInputElement).value;
+    timer = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      if (value.trim()) {
+        params.set('name', value.trim());
+      } else {
+        params.delete('name');
+      }
+      // Update URL without reloading
+      goto(`?${params.toString()}`, { replaceState: true });
+    }, 700);
+  }
+
+  onDestroy(() => clearTimeout(timer));
+</script>
+
+<div>
+  <h1>Estimativa de Idade</h1>
+  <input
+    type="text"
+    placeholder="Digite um nome..."
+    value={input}
+    on:input={onInput}
+    autocomplete="off"
+  />
+
+  {#if data.ageData}
+    <div>
+      <p><strong>Nome:</strong> {data.ageData.name}</p>
+      <p><strong>Idade estimada:</strong> {data.ageData.age}</p>
+      <p><strong>Contagem:</strong> {data.ageData.count}</p>
+    </div>
+  {:else if data.name}
+    <p class="result">Carregando...</p>
+  {/if}
+</div>

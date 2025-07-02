@@ -1,16 +1,11 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "node",
-    "target": "esnext",
     "lib": ["DOM", "ESNext"],
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "types": ["svelte"]
+    "types": ["sveltekit"]
   },
-  "include": ["src/**/*.ts", "src/**/*.svelte"],
-  "exclude": ["node_modules/*", "public/*"]
+  "include": [
+    "src/**/*",
+    "src/app.d.ts"
+  ]
 }
